@@ -17,6 +17,7 @@ const FuncionarioPage = () => {
   const [success, setSuccess] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [userVehicles, setUserVehicles] = useState([]);
+  const [fieldErrors, setFieldErrors] = useState([]);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -84,6 +85,7 @@ const FuncionarioPage = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setFieldErrors([]);
     try {
       await axios.post(`${API_BASE_URL}/usuario`, form, {
         headers: { Authorization: `Bearer ${token}` },
@@ -92,7 +94,11 @@ const FuncionarioPage = () => {
       setForm({ nome: "", cpf: "", senha: "", funcao: "aluno" });
       fetchUsers();
     } catch (err) {
-      setError(err.response?.data?.message || "Erro ao cadastrar usuário");
+      if (err.response?.data?.errors) {
+        setFieldErrors(err.response.data.errors);
+      } else {
+        setError(err.response?.data?.message || "Erro ao cadastrar usuário");
+      }
     }
   };
 
@@ -135,8 +141,17 @@ const FuncionarioPage = () => {
         <button onClick={() => setTab("relatorios")}>Relatórios</button>
         <button onClick={() => setTab("pendentes")}>Pendentes</button>
       </div>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {success && <div style={{ color: "limegreen" }}>{success}</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {fieldErrors.length > 0 && (
+        <div style={{ color: 'red', marginBottom: 12 }}>
+          <b>Erros no formulário:</b>
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {fieldErrors.map((err, idx) => (
+              <li key={idx}>{err.msg} {err.path ? <span style={{ fontStyle: 'italic' }}>({err.path})</span> : null}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       {tab === "users" && (
         <div>
           <h2>Lista de Usuários</h2>
