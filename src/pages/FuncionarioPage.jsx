@@ -223,7 +223,6 @@ const FuncionarioPage = () => {
               <tr>
                 <th>ID</th>
                 <th>Placa</th>
-                <th>Modelo</th>
                 <th>Dono ID</th>
                 <th>Dono Nome</th>
                 <th>Dono CPF</th>
@@ -234,7 +233,6 @@ const FuncionarioPage = () => {
                 <tr key={v.id}>
                   <td>{v.id}</td>
                   <td>{v.placa}</td>
-                  <td>{v.modelo || "-"}</td>
                   <td>{v.dono?.id || v.dono_id || "-"}</td>
                   <td>{v.dono?.nome || "-"}</td>
                   <td>{v.dono?.cpf || "-"}</td>
@@ -285,7 +283,7 @@ const FuncionarioPage = () => {
                 <option value="">Selecione um veículo</option>
                 {vehicles.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.placa} - {v.modelo}
+                    {v.placa}
                   </option>
                 ))}
               </select>
