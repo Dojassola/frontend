@@ -68,7 +68,7 @@ function App() {
                 </button>
               </>
             )}
-            {userRole === "user" && (
+            {(userRole === "aluno" || userRole === "professor") && (
               <>
                 <button onClick={() => setPage("userdashboard")}>
                   Minha Conta
@@ -96,12 +96,14 @@ function App() {
       {isAuthenticated &&
         (userRole === "admin" ||
           userRole === "funcionario" ||
-          userRole === "user") &&
+          userRole === "aluno" ||
+          userRole === "professor") &&
         page === "userdashboard" && <UserDashboard />}
       {isAuthenticated &&
         (userRole === "admin" ||
           userRole === "funcionario" ||
-          userRole === "user") &&
+          userRole === "aluno" ||
+          userRole === "professor") &&
         page === "accountsettings" && <UserAccountSettings />}
     </div>
   );

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../api";
+import { useCrudHandlers } from "../handlers/crudHandlers.js";
+import {
+  fetchUsers,
+  fetchVehicles,
+  fetchRelatorios,
+  fetchUserVehicles,
+} from "../handlers/fetchers.js";
 
 const FuncionarioPage = () => {
   const [users, setUsers] = useState([]);
@@ -12,122 +17,57 @@ const FuncionarioPage = () => {
     cpf: "",
     senha: "",
     funcao: "aluno",
+    veiculo_id: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [userVehicles, setUserVehicles] = useState([]);
-  const [fieldErrors, setFieldErrors] = useState([]);
+  const [vehicleForm, setVehicleForm] = useState({ placa: "", dono_id: "" });
+  const [selectedDonoId, setSelectedDonoId] = useState("");
   const token = localStorage.getItem("token");
+
+  const {
+    error,
+    setError,
+    success,
+    setSuccess,
+    fieldErrors,
+    setFieldErrors,
+    handleRegisterUser,
+    handleDeleteUser,
+    handleCreateVehicle,
+    handleDeleteVehicle,
+    handleCreateRelatorio,
+    handleDeleteRelatorio,
+    handleSaida,
+  } = useCrudHandlers(token, {
+    fetchUsers: () => fetchUsers(token, setUsers),
+    fetchVehicles: () => fetchVehicles(token, setVehicles),
+    fetchRelatorios: () => fetchRelatorios(token, setRelatorios),
+  });
 
   useEffect(() => {
     if (token) {
-      fetchUsers();
-      fetchVehicles();
-      fetchRelatorios();
+      fetchUsers(token, setUsers);
+      fetchVehicles(token, setVehicles);
+      fetchRelatorios(token, setRelatorios);
     }
   }, []);
-
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/usuario/todos`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUsers(res.data);
-    } catch (err) {
-      setUsers([]);
-    }
-  };
-
-  const fetchVehicles = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/veiculo/todos`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setVehicles(res.data);
-    } catch (err) {
-      setVehicles([]);
-    }
-  };
-
-  const fetchRelatorios = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/relatorio/todos`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setRelatorios(res.data);
-    } catch (err) {
-      setRelatorios([]);
-    }
-  };
-
-  const fetchUserVehicles = async (userId) => {
-    if (!userId) return setUserVehicles([]);
-    try {
-      const res = await axios.get(`${API_BASE_URL}/veiculo/todos`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUserVehicles(
-        res.data.filter(
-          (v) => v.dono?.id === Number(userId) || v.dono_id === Number(userId)
-        )
-      );
-    } catch {
-      setUserVehicles([]);
-    }
-  };
 
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setFieldErrors([]);
-    try {
-      await axios.post(`${API_BASE_URL}/usuario`, form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSuccess("Usuário cadastrado com sucesso!");
-      setForm({ nome: "", cpf: "", senha: "", funcao: "aluno" });
-      fetchUsers();
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        setFieldErrors(err.response.data.errors);
-      } else {
-        setError(err.response?.data?.message || "Erro ao cadastrar usuário");
-      }
-    }
+  const handleVehicleInput = (e) => {
+    setVehicleForm({ ...vehicleForm, [e.target.name]: e.target.value });
   };
 
-  const handleDelete = async (id) => {
-    setError("");
-    setSuccess("");
-    try {
-      await axios.delete(`${API_BASE_URL}/usuario/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSuccess("Usuário deletado!");
-      fetchUsers();
-    } catch (err) {
-      setError(err.response?.data?.message || "Erro ao deletar usuário");
-    }
+  const handleFetchUserVehicles = (userId) => {
+    fetchUserVehicles(token, userId, setUserVehicles);
   };
 
-  const handleSaida = async (relatorioId) => {
-    setError("");
-    setSuccess("");
-    try {
-      await axios.put(`${API_BASE_URL}/relatorio/saida/${relatorioId}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSuccess("Saída registrada com sucesso!");
-      fetchRelatorios();
-    } catch (err) {
-      setError(err.response?.data?.message || "Erro ao registrar saída");
-    }
+  const handleDonoSelect = (e) => {
+    setSelectedDonoId(e.target.value);
+    setVehicleForm({ ...vehicleForm, dono_id: e.target.value });
   };
 
   const pendentes = relatorios.filter((r) => !r.saida);
@@ -141,21 +81,37 @@ const FuncionarioPage = () => {
         <button onClick={() => setTab("relatorios")}>Relatórios</button>
         <button onClick={() => setTab("pendentes")}>Pendentes</button>
       </div>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {error && <div style={{ color: "red" }}>{error}</div>}
       {fieldErrors.length > 0 && (
-        <div style={{ color: 'red', marginBottom: 12 }}>
+        <div style={{ color: "red", marginBottom: 12 }}>
           <b>Erros no formulário:</b>
           <ul style={{ margin: 0, paddingLeft: 18 }}>
             {fieldErrors.map((err, idx) => (
-              <li key={idx}>{err.msg} {err.path ? <span style={{ fontStyle: 'italic' }}>({err.path})</span> : null}</li>
+              <li key={idx}>
+                {err.msg}{" "}
+                {err.path ? (
+                  <span style={{ fontStyle: "italic" }}>({err.path})</span>
+                ) : null}
+              </li>
             ))}
           </ul>
         </div>
       )}
+      {success && (
+        <div style={{ color: "#27ae60", marginBottom: 12 }}>{success}</div>
+      )}
       {tab === "users" && (
         <div>
           <h2>Lista de Usuários</h2>
-          <form onSubmit={handleRegister} style={{ marginBottom: 24 }}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleRegisterUser(form, () =>
+                setForm({ nome: "", cpf: "", senha: "", funcao: "aluno" })
+              );
+            }}
+            style={{ marginBottom: 24 }}
+          >
             <input
               name="nome"
               placeholder="Nome"
@@ -196,7 +152,6 @@ const FuncionarioPage = () => {
                 <th>Nome</th>
                 <th>Função</th>
                 <th>CPF</th>
-                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -206,9 +161,6 @@ const FuncionarioPage = () => {
                   <td>{u.nome}</td>
                   <td>{u.funcao}</td>
                   <td>{u.cpf}</td>
-                  <td>
-                    <button onClick={() => handleDelete(u.id)}>Deletar</button>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -218,6 +170,41 @@ const FuncionarioPage = () => {
       {tab === "vehicles" && (
         <div>
           <h2>Lista de Veículos</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formToSend = {
+                ...vehicleForm,
+                dono_id: selectedDonoId ? Number(selectedDonoId) : "",
+              };
+              handleCreateVehicle(formToSend, () =>
+                setVehicleForm({ placa: "", dono_id: "" })
+              );
+            }}
+            style={{ marginBottom: 24 }}
+          >
+            <input
+              name="placa"
+              placeholder="Placa"
+              value={vehicleForm.placa}
+              onChange={handleVehicleInput}
+              required
+            />
+            <select
+              name="dono_id"
+              value={selectedDonoId}
+              onChange={handleDonoSelect}
+              required
+            >
+              <option value="">Selecione o dono</option>
+              {users.map((dono) => (
+                <option key={dono.id} value={dono.id}>
+                  {dono.nome} ({dono.cpf})
+                </option>
+              ))}
+            </select>
+            <button type="submit">Cadastrar Veículo</button>
+          </form>
           <table>
             <thead>
               <tr>
@@ -246,28 +233,11 @@ const FuncionarioPage = () => {
         <div>
           <h2>Lista de Relatórios</h2>
           <form
-            onSubmit={async (e) => {
+            onSubmit={(e) => {
               e.preventDefault();
-              setError("");
-              setSuccess("");
-              try {
-                await axios.post(
-                  `${API_BASE_URL}/relatorio/entrada`,
-                  {
-                    veiculo_id: form.veiculo_id,
-                  },
-                  {
-                    headers: { Authorization: `Bearer ${token}` },
-                  }
-                );
-                setSuccess("Relatório criado com sucesso!");
-                setForm({ ...form, veiculo_id: "" });
-                fetchRelatorios();
-              } catch (err) {
-                setError(
-                  err.response?.data?.message || "Erro ao criar relatório"
-                );
-              }
+              handleCreateRelatorio({ veiculo_id: form.veiculo_id }, () =>
+                setForm({ ...form, veiculo_id: "" })
+              );
             }}
             style={{ marginBottom: 24 }}
           >
@@ -295,7 +265,7 @@ const FuncionarioPage = () => {
                 value={selectedUserId}
                 onChange={(e) => {
                   setSelectedUserId(e.target.value);
-                  fetchUserVehicles(e.target.value);
+                  handleFetchUserVehicles(e.target.value);
                   setForm({ ...form, veiculo_id: "" });
                 }}
                 style={{ marginRight: 8 }}
@@ -330,6 +300,7 @@ const FuncionarioPage = () => {
                 <th>Veículo</th>
                 <th>Entrada</th>
                 <th>Saída</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -339,6 +310,20 @@ const FuncionarioPage = () => {
                   <td>{r.veiculo?.placa || "-"} </td>
                   <td>{r.entrada}</td>
                   <td>{r.saida || "-"}</td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        if (!r.saida) {
+                          alert("Não é permitido deletar um relatório sem saída registrada. Por favor, registre a saída antes de deletar.");
+                          return;
+                        }
+                        handleDeleteRelatorio(r.id);
+                      }}
+                      style={{ background: "#c0392b", color: "#fff" }}
+                    >
+                      Deletar
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -358,7 +343,7 @@ const FuncionarioPage = () => {
                   Entrada: {r.entrada}
                   <button
                     style={{ marginLeft: 12 }}
-                    onClick={() => handleSaida(r.id)}
+                    onClick={() => handleSaida(r.veiculo?.id || r.veiculo_id)}
                   >
                     Registrar Saída
                   </button>

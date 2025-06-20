@@ -1,29 +1,34 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { API_BASE_URL } from '../api';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 function VagasPublicas() {
   const [estacionamentos, setEstacionamentos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/estacionamento`)
-      .then(res => {
+    axios
+      .get(`${API_BASE_URL}/estacionamento`)
+      .then((res) => {
         setEstacionamentos(res.data);
         setLoading(false);
       })
       .catch(() => {
-        setError('Erro ao carregar estacionamentos.');
+        setError("Erro ao carregar estacionamentos.");
         setLoading(false);
       });
   }, []);
 
   return (
     <div className="container">
-      <h1 style={{ textAlign: 'center' }}>Bem-vindo ao Sistema de Estacionamento</h1>
-      <h2 style={{ textAlign: 'center' }}>Vagas Públicas</h2>
-      {loading && <div style={{ textAlign: 'center' }}>Carregando...</div>}
-      {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
+      <h1 style={{ textAlign: "center" }}>
+        Bem-vindo ao Sistema de Estacionamento
+      </h1>
+      <h2 style={{ textAlign: "center" }}>Vagas Públicas</h2>
+      {loading && <div style={{ textAlign: "center" }}>Carregando...</div>}
+      {error && (
+        <div style={{ color: "red", textAlign: "center" }}>{error}</div>
+      )}
       {!loading && !error && (
         <table>
           <thead>
@@ -35,7 +40,7 @@ function VagasPublicas() {
             </tr>
           </thead>
           <tbody>
-            {estacionamentos.map(estacionamento => (
+            {estacionamentos.map((estacionamento) => (
               <tr key={estacionamento.id}>
                 <td>{estacionamento.id}</td>
                 <td>{estacionamento.vagas}</td>
@@ -46,7 +51,7 @@ function VagasPublicas() {
           </tbody>
         </table>
       )}
-      <div style={{ textAlign: 'center', marginTop: 32, color: '#f7c873' }}>
+      <div style={{ textAlign: "center", marginTop: 32, color: "#f7c873" }}>
         <p>Faça login para acessar funcionalidades exclusivas!</p>
       </div>
     </div>

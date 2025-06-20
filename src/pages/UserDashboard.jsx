@@ -47,7 +47,6 @@ const UserDashboard = () => {
                 <tr>
                   <th>ID</th>
                   <th>Placa</th>
-                  <th>Modelo</th>
                 </tr>
               </thead>
               <tbody>
@@ -55,7 +54,6 @@ const UserDashboard = () => {
                   <tr key={v.id}>
                     <td>{v.id}</td>
                     <td>{v.placa}</td>
-                    <td>{v.modelo}</td>
                   </tr>
                 ))}
               </tbody>

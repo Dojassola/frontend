@@ -11,7 +11,10 @@ function Login({ onLogin }) {
     e.preventDefault();
     setError("");
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, { cpf, senha });
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, {
+        cpf,
+        senha,
+      });
       const data = res.data;
       if (res.status === 200 && data.token) {
         localStorage.setItem("token", data.token);
