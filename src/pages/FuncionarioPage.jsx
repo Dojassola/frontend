@@ -314,7 +314,9 @@ const FuncionarioPage = () => {
                     <button
                       onClick={() => {
                         if (!r.saida) {
-                          alert("Não é permitido deletar um relatório sem saída registrada. Por favor, registre a saída antes de deletar.");
+                          alert(
+                            "Não é permitido deletar um relatório sem saída registrada. Por favor, registre a saída antes de deletar."
+                          );
                           return;
                         }
                         handleDeleteRelatorio(r.id);

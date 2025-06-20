@@ -395,7 +395,8 @@ function UserEditSection({ users, handleUpdateUser }) {
         });
     }
   }, [selectedId, users]);
-  const handleInput = (e) => setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  const handleInput = (e) =>
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
   return (
     <div
       style={{
@@ -406,7 +407,10 @@ function UserEditSection({ users, handleUpdateUser }) {
       }}
     >
       <h3>Editar Usuário</h3>
-      <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)}>
+      <select
+        value={selectedId}
+        onChange={(e) => setSelectedId(e.target.value)}
+      >
         <option value="">Selecione um usuário</option>
         {users.map((u) => (
           <option key={u.id} value={u.id}>
