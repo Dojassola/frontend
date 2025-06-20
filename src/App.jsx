@@ -44,9 +44,6 @@ function App() {
             {userRole === "admin" && (
               <>
                 <button onClick={() => setPage("admin")}>Admin</button>
-                <button onClick={() => setPage("funcionario")}>
-                  Funcionario
-                </button>
                 <button onClick={() => setPage("userdashboard")}>
                   Minha Conta
                 </button>

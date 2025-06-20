@@ -5,15 +5,18 @@ import { API_BASE_URL } from "../api";
 
 const UserAccountSettings = () => {
   const [user, setUser] = useState({ nome: "", cpf: "", funcao: "" });
-  const [form, setForm] = useState({ nome: "", senha: "", cpf: "", funcao: "" });
+  const [form, setForm] = useState({
+    nome: "",
+    senha: "",
+    cpf: "",
+    funcao: "",
+  });
   const token = localStorage.getItem("token");
   const {
     error,
     setError,
     success,
-    setSuccess,
     fieldErrors,
-    setFieldErrors,
     handleUpdateUser,
     handleDeleteOwnAccount,
   } = useCrudHandlers(token);
@@ -26,39 +29,35 @@ const UserAccountSettings = () => {
         })
         .then((res) => {
           setUser(res.data);
-          setForm({ nome: res.data.nome, senha: "", cpf: res.data.cpf, funcao: res.data.funcao });
+          setForm({
+            nome: res.data.nome,
+            senha: "",
+            cpf: res.data.cpf,
+            funcao: res.data.funcao,
+          });
         })
         .catch(() => setError("Erro ao carregar dados do usuário."));
     }
-  }, [token]);
+  }, [token, setError]);
 
-  const handleInput = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleUpdate = async (e) => {
+  const handleInput = (e) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const handleUpdate = (e) => {
     e.preventDefault();
     handleUpdateUser(
       user.id,
-      {
-        nome: form.nome,
-        senha: form.senha || undefined,
-        cpf: form.cpf,
-        funcao: user.funcao, // Always send the current function
-      },
-      () => setForm({ ...form, senha: "" })
+      { ...form, funcao: user.funcao, senha: form.senha || undefined },
+      () => setForm((f) => ({ ...f, senha: "" }))
     );
   };
-
-  const handleDelete = async () => {
-    handleDeleteOwnAccount(user.id, () => {
+  const handleDelete = () =>
+    handleDeleteOwnAccount(user.id, () =>
       setTimeout(() => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         window.location.reload();
-      }, 1500);
-    });
-  };
+      }, 1500)
+    );
 
   return (
     <div className="container">
@@ -95,23 +94,13 @@ const UserAccountSettings = () => {
         <label>
           CPF:
           <br />
-          <input
-            name="cpf"
-            value={form.cpf}
-            onChange={handleInput}
-            required
-          />
+          <input name="cpf" value={form.cpf} onChange={handleInput} required />
         </label>
         <br />
-        {/* Função is not editable by the user */}
         <label>
           Função:
           <br />
-          <input
-            name="funcao"
-            value={form.funcao}
-            disabled
-          />
+          <input name="funcao" value={form.funcao} disabled />
         </label>
         <br />
         <label>
