@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 const UserDashboard = () => {
   const [relatorios, setRelatorios] = useState([]);
@@ -11,7 +12,7 @@ const UserDashboard = () => {
   useEffect(() => {
     if (token) {
       axios
-        .get("http://localhost:3000/veiculo", {
+        .get(`${API_BASE_URL}/veiculo`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((vehRes) => {
@@ -19,7 +20,7 @@ const UserDashboard = () => {
         })
         .catch(() => setVehicles([]));
       axios
-        .get("http://localhost:3000/relatorio", {
+        .get(`${API_BASE_URL}/relatorio`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((relRes) => {

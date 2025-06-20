@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
@@ -18,7 +19,7 @@ const AdminPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/usuario/todos", {
+      const res = await axios.get(`${API_BASE_URL}/usuario/todos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);
@@ -29,7 +30,7 @@ const AdminPage = () => {
 
   const fetchVehicles = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/veiculo/todos", {
+      const res = await axios.get(`${API_BASE_URL}/veiculo/todos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setVehicles(res.data);
@@ -40,7 +41,7 @@ const AdminPage = () => {
 
   const fetchRelatorios = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/relatorio/todos", {
+      const res = await axios.get(`${API_BASE_URL}/relatorio/todos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRelatorios(res.data);

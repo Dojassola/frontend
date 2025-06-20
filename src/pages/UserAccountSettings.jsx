@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 const UserAccountSettings = () => {
   const [user, setUser] = useState({ nome: "", cpf: "", funcao: "" });
@@ -11,7 +12,7 @@ const UserAccountSettings = () => {
   useEffect(() => {
     if (token) {
       axios
-        .get("http://localhost:3000/usuario", {
+        .get(`${API_BASE_URL}/usuario`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
@@ -31,16 +32,13 @@ const UserAccountSettings = () => {
     setError("");
     setSuccess("");
     try {
-      await axios.put(
-        `http://localhost:3000/usuario/${user.id}`,
-        {
-          nome: form.nome,
-          senha: form.senha || undefined,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.put(`${API_BASE_URL}/usuario/${user.id}`, {
+        nome: form.nome,
+        senha: form.senha || undefined,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setSuccess("Informações atualizadas com sucesso!");
       setForm({ ...form, senha: "" });
     } catch (err) {
@@ -58,7 +56,7 @@ const UserAccountSettings = () => {
     setError("");
     setSuccess("");
     try {
-      await axios.delete(`http://localhost:3000/usuario/${user.id}`, {
+      await axios.delete(`${API_BASE_URL}/usuario/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess("Conta excluída com sucesso!");

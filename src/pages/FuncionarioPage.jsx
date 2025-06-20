@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 const FuncionarioPage = () => {
   const [users, setUsers] = useState([]);
@@ -28,7 +29,7 @@ const FuncionarioPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/usuario/todos", {
+      const res = await axios.get(`${API_BASE_URL}/usuario/todos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);
@@ -39,7 +40,7 @@ const FuncionarioPage = () => {
 
   const fetchVehicles = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/veiculo/todos", {
+      const res = await axios.get(`${API_BASE_URL}/veiculo/todos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setVehicles(res.data);
@@ -50,7 +51,7 @@ const FuncionarioPage = () => {
 
   const fetchRelatorios = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/relatorio/todos", {
+      const res = await axios.get(`${API_BASE_URL}/relatorio/todos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRelatorios(res.data);
@@ -62,7 +63,7 @@ const FuncionarioPage = () => {
   const fetchUserVehicles = async (userId) => {
     if (!userId) return setUserVehicles([]);
     try {
-      const res = await axios.get(`http://localhost:3000/veiculo/todos`, {
+      const res = await axios.get(`${API_BASE_URL}/veiculo/todos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUserVehicles(
@@ -84,7 +85,7 @@ const FuncionarioPage = () => {
     setError("");
     setSuccess("");
     try {
-      await axios.post("http://localhost:3000/usuario", form, {
+      await axios.post(`${API_BASE_URL}/usuario`, form, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess("Usuário cadastrado com sucesso!");
@@ -99,7 +100,7 @@ const FuncionarioPage = () => {
     setError("");
     setSuccess("");
     try {
-      await axios.delete(`http://localhost:3000/usuario/${id}`, {
+      await axios.delete(`${API_BASE_URL}/usuario/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess("Usuário deletado!");
@@ -113,13 +114,9 @@ const FuncionarioPage = () => {
     setError("");
     setSuccess("");
     try {
-      await axios.put(
-        `http://localhost:3000/relatorio/saida/${relatorioId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.put(`${API_BASE_URL}/relatorio/saida/${relatorioId}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setSuccess("Saída registrada com sucesso!");
       fetchRelatorios();
     } catch (err) {
@@ -242,7 +239,7 @@ const FuncionarioPage = () => {
               setSuccess("");
               try {
                 await axios.post(
-                  "http://localhost:3000/relatorio/entrada",
+                  `${API_BASE_URL}/relatorio/entrada`,
                   {
                     veiculo_id: form.veiculo_id,
                   },

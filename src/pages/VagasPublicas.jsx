@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../api';
 
 function VagasPublicas() {
   const [estacionamentos, setEstacionamentos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   useEffect(() => {
-    axios.get('http://localhost:3000/estacionamento')
+    axios.get(`${API_BASE_URL}/estacionamento`)
       .then(res => {
         setEstacionamentos(res.data);
         setLoading(false);

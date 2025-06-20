@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 function Login({ onLogin }) {
   const [cpf, setCpf] = useState("");
@@ -10,10 +11,7 @@ function Login({ onLogin }) {
     e.preventDefault();
     setError("");
     try {
-      const res = await axios.post("http://localhost:3000/auth/login", {
-        cpf,
-        senha,
-      });
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, { cpf, senha });
       const data = res.data;
       if (res.status === 200 && data.token) {
         localStorage.setItem("token", data.token);
