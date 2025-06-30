@@ -34,15 +34,15 @@ const UserDashboard = () => {
   return (
     <div className="container">
       <h1>Minha Conta</h1>
-      {loading && <div>Carregando...</div>}
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {loading && <div className="loading-message">Carregando...</div>}
+      {error && <div className="error-message">{error}</div>}
       {!loading && !error && (
         <>
           <h2>Meus Veículos</h2>
           {vehicles.length === 0 ? (
             <p>Nenhum veículo cadastrado.</p>
           ) : (
-            <table>
+            <table className="dashboard-table">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -59,11 +59,11 @@ const UserDashboard = () => {
               </tbody>
             </table>
           )}
-          <h2 style={{ marginTop: 32 }}>Meus Relatórios</h2>
+          <h2 className="dashboard-section">Meus Relatórios</h2>
           {relatorios.length === 0 ? (
             <p>Nenhum relatório encontrado.</p>
           ) : (
-            <table>
+            <table className="dashboard-table">
               <thead>
                 <tr>
                   <th>ID</th>

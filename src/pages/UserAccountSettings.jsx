@@ -62,24 +62,24 @@ const UserAccountSettings = () => {
   return (
     <div className="container">
       <h1>Configurações da Conta</h1>
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && <div className="error-message">{error}</div>}
       {fieldErrors.length > 0 && (
-        <div style={{ color: "red", marginBottom: 12 }}>
+        <div className="field-errors">
           <b>Erros no formulário:</b>
-          <ul style={{ margin: 0, paddingLeft: 18 }}>
+          <ul>
             {fieldErrors.map((err, idx) => (
               <li key={idx}>
                 {err.msg}{" "}
                 {err.path ? (
-                  <span style={{ fontStyle: "italic" }}>({err.path})</span>
+                  <span className="error-path">({err.path})</span>
                 ) : null}
               </li>
             ))}
           </ul>
         </div>
       )}
-      {success && <div style={{ color: "limegreen" }}>{success}</div>}
-      <form onSubmit={handleUpdate} style={{ marginBottom: 24 }}>
+      {success && <div className="success-message">{success}</div>}
+      <form onSubmit={handleUpdate} className="form">
         <label>
           Nome:
           <br />
@@ -117,10 +117,7 @@ const UserAccountSettings = () => {
         <br />
         <button type="submit">Atualizar Informações</button>
       </form>
-      <button
-        onClick={handleDelete}
-        style={{ background: "#c0392b", color: "#fff" }}
-      >
+      <button onClick={handleDelete} className="delete-button">
         Excluir Conta
       </button>
     </div>

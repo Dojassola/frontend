@@ -88,6 +88,14 @@ td {
   color: #f1f1f1;
 }
 
+table tr:nth-child(even) {
+  background-color: #2a2f3f;
+}
+
+table tr:nth-child(odd) {
+  background-color: #23283a;
+}
+
 button {
   background: #f7c873;
   color: #23283a;
@@ -154,4 +162,70 @@ nav {
     padding: 0.5rem;
     font-size: 0.95rem;
   }
+}
+
+.admin-container {
+  padding: 20px;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+}
+
+.field-errors {
+  color: red;
+  margin-bottom: 12px;
+}
+
+.field-errors ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.error-path {
+  font-style: italic;
+}
+
+.success-message {
+  color: limegreen;
+}
+
+.form {
+  margin-bottom: 24px;
+}
+
+.form-section {
+  margin-bottom: 12px;
+}
+
+.delete-button {
+  background: #c0392b;
+  color: #fff;
+}
+
+.register-button {
+  margin-left: 12px;
+}
+
+.edit-section {
+  margin-bottom: 24px;
+  border: 1px solid #444;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+.dashboard-section {
+  margin-top: 32px;
 }

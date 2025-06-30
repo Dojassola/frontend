@@ -75,31 +75,29 @@ const FuncionarioPage = () => {
   return (
     <div className="container">
       <h1>Dashboard do Funcionário</h1>
-      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+      <div className="tab-buttons">
         <button onClick={() => setTab("users")}>Usuários</button>
         <button onClick={() => setTab("vehicles")}>Veículos</button>
         <button onClick={() => setTab("relatorios")}>Relatórios</button>
         <button onClick={() => setTab("pendentes")}>Pendentes</button>
       </div>
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && <div className="error-message">{error}</div>}
       {fieldErrors.length > 0 && (
-        <div style={{ color: "red", marginBottom: 12 }}>
+        <div className="field-errors">
           <b>Erros no formulário:</b>
-          <ul style={{ margin: 0, paddingLeft: 18 }}>
+          <ul>
             {fieldErrors.map((err, idx) => (
               <li key={idx}>
                 {err.msg}{" "}
                 {err.path ? (
-                  <span style={{ fontStyle: "italic" }}>({err.path})</span>
+                  <span className="error-path">({err.path})</span>
                 ) : null}
               </li>
             ))}
           </ul>
         </div>
       )}
-      {success && (
-        <div style={{ color: "#27ae60", marginBottom: 12 }}>{success}</div>
-      )}
+      {success && <div className="success-message">{success}</div>}
       {tab === "users" && (
         <div>
           <h2>Lista de Usuários</h2>
@@ -110,7 +108,7 @@ const FuncionarioPage = () => {
                 setForm({ nome: "", cpf: "", senha: "", funcao: "aluno" })
               );
             }}
-            style={{ marginBottom: 24 }}
+            className="form"
           >
             <input
               name="nome"
@@ -145,7 +143,7 @@ const FuncionarioPage = () => {
             </select>
             <button type="submit">Cadastrar</button>
           </form>
-          <table>
+          <table className="table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -181,7 +179,7 @@ const FuncionarioPage = () => {
                 setVehicleForm({ placa: "", dono_id: "" })
               );
             }}
-            style={{ marginBottom: 24 }}
+            className="form"
           >
             <input
               name="placa"
@@ -205,7 +203,7 @@ const FuncionarioPage = () => {
             </select>
             <button type="submit">Cadastrar Veículo</button>
           </form>
-          <table>
+          <table className="table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -239,16 +237,15 @@ const FuncionarioPage = () => {
                 setForm({ ...form, veiculo_id: "" })
               );
             }}
-            style={{ marginBottom: 24 }}
+            className="form"
           >
-            <div style={{ marginBottom: 12 }}>
+            <div className="form-section">
               <b>Opção 1: Selecionar veículo diretamente</b>
               <br />
               <select
                 name="veiculo_id"
                 value={form.veiculo_id || ""}
                 onChange={handleInput}
-                style={{ marginRight: 8 }}
               >
                 <option value="">Selecione um veículo</option>
                 {vehicles.map((v) => (
@@ -258,7 +255,7 @@ const FuncionarioPage = () => {
                 ))}
               </select>
             </div>
-            <div style={{ marginBottom: 12 }}>
+            <div className="form-section">
               <b>Opção 2: Selecionar usuário e depois veículo</b>
               <br />
               <select
@@ -268,7 +265,6 @@ const FuncionarioPage = () => {
                   handleFetchUserVehicles(e.target.value);
                   setForm({ ...form, veiculo_id: "" });
                 }}
-                style={{ marginRight: 8 }}
               >
                 <option value="">Selecione um usuário</option>
                 {users.map((u) => (
@@ -293,7 +289,7 @@ const FuncionarioPage = () => {
             </div>
             <button type="submit">Criar Relatório de Entrada</button>
           </form>
-          <table>
+          <table className="table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -321,7 +317,7 @@ const FuncionarioPage = () => {
                         }
                         handleDeleteRelatorio(r.id);
                       }}
-                      style={{ background: "#c0392b", color: "#fff" }}
+                      className="delete-button"
                     >
                       Deletar
                     </button>
@@ -344,7 +340,7 @@ const FuncionarioPage = () => {
                   Relatório #{r.id} - Veículo: {r.veiculo?.placa || "-"} -
                   Entrada: {r.entrada}
                   <button
-                    style={{ marginLeft: 12 }}
+                    className="register-button"
                     onClick={() => handleSaida(r.veiculo?.id || r.veiculo_id)}
                   >
                     Registrar Saída
